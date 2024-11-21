@@ -1,0 +1,4 @@
+---
+- name: Configure physical interfaces
+  cisco.ios.ios_interfaces:
+    config: "{{ interfaces }}"

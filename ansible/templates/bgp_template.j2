@@ -1,0 +1,29 @@
+router bgp {{ bgp.as_number }}
+ bgp router-id {{ bgp.router_id }}
+{% if bgp.log_neighbor_changes %}
+ bgp log-neighbor-changes
+{% endif %}
+{% for neighbor in bgp.neighbor %}
+ neighbor {{ neighbor.address }} remote-as {{ neighbor.remote_as }}
+{% if neighbor.description is defined and neighbor.description %}
+ neighbor {{ neighbor.address }} description {{ neighbor.description }}
+{% endif %}
+{% if neighbor.update_source %}
+ neighbor {{ neighbor.address }} update-source {{ neighbor.update_source }}
+{% endif %}
+ !
+{% endfor %}
+{% for family in bgp.address_family %}
+ address-family {{ family.afi }} {{ family.safi }}
+{% for neighbor in family.neighbor %}
+{% if neighbor.activate %}
+  neighbor {{ neighbor.address }} activate
+{% endif %}
+{% if neighbor.send_community is defined and neighbor.send_community %}
+{% if neighbor.send_community.extended %}
+  neighbor {{ neighbor.address }} send-community extended
+{% endif %}
+{% endif %}
+{% endfor %}
+ exit-address-family
+{% endfor %}

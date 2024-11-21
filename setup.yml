@@ -1,0 +1,40 @@
+name: iol-mpls-l3vpn
+
+mgmt:
+  network: br-iol-mpls-l3vpn
+  ipv4-subnet: 10.0.0.0/24
+
+topology:
+  kinds:
+    cisco_iol:
+      image: vrnetlab/cisco_iol:17.12.01
+  nodes:
+    pe_west:
+      kind: cisco_iol
+      mgmt-ipv4: 10.0.0.2
+      ports:
+        - 10022:22
+    p_central:
+      kind: cisco_iol
+      mgmt-ipv4: 10.0.0.3
+      ports:
+        - 10122:22
+    pe_east:
+      kind: cisco_iol
+      mgmt-ipv4: 10.0.0.4
+      ports:
+        - 10222:22
+    client1:
+      kind: linux
+      image: wbitt/network-multitool:alpine-extra
+      mgmt-ipv4: 10.0.0.5
+    client2:
+      kind: linux
+      image: wbitt/network-multitool:alpine-extra
+      mgmt-ipv4: 10.0.0.6
+
+  links:
+    - endpoints: ["pe_west:Ethernet0/1","p_central:Ethernet0/1"]
+    - endpoints: ["pe_east:Ethernet0/1","p_central:Ethernet0/2"]
+    - endpoints: ["pe_west:Ethernet0/2","client1:eth1"]
+    - endpoints: ["pe_east:Ethernet0/2","client2:eth1"]

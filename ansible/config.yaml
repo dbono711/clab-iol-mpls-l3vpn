@@ -1,0 +1,25 @@
+---
+- name: Configure network devices
+  hosts: all
+  gather_facts: false
+  strategy: free
+  tasks:
+    - name: configure {{ inventory_hostname }} interfaces
+      cisco.ios.ios_config:
+        src: interfaces_template.j2
+      when: interfaces is defined and interfaces
+    
+    - name: configure {{ inventory_hostname }} ospf
+      cisco.ios.ios_config:
+        src: ospf_template.j2
+      when: ospf is defined and ospf
+    
+    - name: configure {{ inventory_hostname }} mpls
+      cisco.ios.ios_config:
+        src: mpls_template.j2
+      when: mpls is defined and mpls
+    
+    - name: configure {{ inventory_hostname }} bgp
+      cisco.ios.ios_config:
+        src: bgp_template.j2
+      when: bgp is defined and bgp

@@ -1,0 +1,23 @@
+{% for interface in interfaces %}
+interface {{ interface.name }}
+ description {{ interface.description }}
+{% if interface.enabled %}
+ no shutdown
+{% else %}
+ shutdown
+{% endif %}
+{% if interface.ipv4 is defined and interface.ipv4 %}
+ ip address {{ interface.ipv4.address }} {{ interface.ipv4.mask }}
+{% endif %}
+{% if interface.ospf is defined and interface.ospf %}
+{% if interface.ospf.network is defined and interface.ospf.network %}
+ ip ospf network {{ interface.ospf.network }}
+{% endif %}
+{% for ospf in interface.ospf.process %}
+ ip ospf {{ ospf.id }} area {{ ospf.area }}
+{% endfor %}
+{% endif %}
+{% if interface.mpls is defined and interface.mpls.ip.enabled %}
+ mpls ip
+{% endif %}
+{% endfor %}
